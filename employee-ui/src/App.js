@@ -3,30 +3,25 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import EmployeeList from "./components/EmployeeList";
 import { jwtDecode } from "jwt-decode";
 
-// ProtectedRoute wrapper
 function ProtectedRoute({ token, children }) {
-    if (!token) {
-        return <Navigate to="/" replace />;
-    }
-    return children;
+    return token ? children : <Navigate to="/" replace />;
 }
 
 function App() {
     const [token, setToken] = useState(localStorage.getItem("token"));
-
-    // Decode token safely
     const decoded = token ? jwtDecode(token) : null;
     const username = decoded?.name || "User";
     const role = decoded?.role || "User";
+    console.log("Decoded JWT:", decoded);
 
-    // Check expiration
+
     useEffect(() => {
         if (decoded?.exp && decoded.exp * 1000 < Date.now()) {
             handleLogout();
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [decoded]);
 
     const handleLogout = () => {
@@ -37,7 +32,7 @@ function App() {
     return (
         <BrowserRouter>
             <Routes>
-                {/* Login Route */}
+                {/* Login route */}
                 <Route
                     path="/"
                     element={
@@ -48,8 +43,7 @@ function App() {
                         )
                     }
                 />
-
-                {/* Dashboard Route */}
+                {/* Dashboard route */}
                 <Route
                     path="/dashboard"
                     element={
@@ -60,6 +54,15 @@ function App() {
                                 username={username}
                                 role={role}
                             />
+                        </ProtectedRoute>
+                    }
+                />
+                {/* Employees route */}
+                <Route
+                    path="/employees"
+                    element={
+                        <ProtectedRoute token={token}>
+                            <EmployeeList />
                         </ProtectedRoute>
                     }
                 />
