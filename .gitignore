@@ -1,0 +1,22 @@
+# Visual Studio cache
+.vs/
+
+# Build outputs
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+
+# VS Code settings
+.vscode/
+
+# Node.js dependencies (for your React frontend)
+node_modules/
+
+# Logs
+*.log
+
+# Environment files
+*.env
